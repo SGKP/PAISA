@@ -1,0 +1,117 @@
+@use "sass:math";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: url("https://images.unsplash.com/photo-1602475063211-3d98d60e3b1f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmxhY2slMjBkb3R8ZW58MHx8MHx8fDA%3D") center center / cover no-repeat;
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+/* Background Container with image */
+.container {
+    position: fixed;
+    inset: 0; /* shorthand for top: 0, right: 0, bottom: 0, left: 0 */
+    width: 100vw;
+    height: 100vh;
+    // background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/moon2.png") center center / cover no-repeat;
+    z-index: -1;
+}
+
+/* Particle Animation */
+.circle-container {
+  $particleNum: 200;
+  position: absolute;
+  transform: translateY(-10vh);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  .circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    background-image: radial-gradient(
+      hsl(180, 100%, 80%),
+      hsl(180, 100%, 80%) 10%,
+      hsla(180, 100%, 80%, 0) 56%
+    );
+    animation: fade-frames 200ms infinite, scale-frames 2s infinite;
+  }
+
+  @keyframes fade-frames {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-frames {
+    0% {
+      transform: scale3d(0.4, 0.4, 1);
+    }
+    50% {
+      transform: scale3d(2.2, 2.2, 1);
+    }
+    100% {
+      transform: scale3d(0.4, 0.4, 1);
+    }
+  }
+
+  $particleBaseSize: 8;
+
+  @for $i from 1 through $particleNum {
+    &:nth-child(#{$i}) {
+      $circleSize: math.random($particleBaseSize);
+      width: #{$circleSize}px;
+      height: #{$circleSize}px;
+
+      $startPositionY: math.random(10) + 100;
+      $framesName: move-frames-#{$i};
+      $moveDuration: 28000 + math.random(9000) + ms;
+
+      animation-name: #{$framesName};
+      animation-duration: $moveDuration;
+      animation-delay: math.random(37000) + ms;
+
+      @keyframes #{$framesName} {
+        from {
+          transform: translate3d(
+            math.random(100) + vw,
+            $startPositionY + vh,
+            0
+          );
+        }
+        to {
+          transform: translate3d(
+            math.random(100) + vw,
+            -$startPositionY - math.random(30) + vh,
+            0
+          );
+        }
+      }
+
+      .circle {
+        animation-delay: math.random(4000) + ms;
+      }
+    }
+  }
+}
