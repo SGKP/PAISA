@@ -1,8 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "./globals.scss";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+// import "./globals.scss";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import SessionWrapper from "@/components/SessionWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,24 +23,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        
-        {/* Background Animation Layer */}
-        <div className="container">
-          {/* Particle Elements */}
-          {[...Array(200)].map((_, i) => (
-            <div key={i} className="circle-container">
-              <div className="circle"></div>
-            </div>
-          ))}
-        </div>
-
-        {/* Foreground Content */}
-        <div className="relative z-10">
+      <body className={`${geistSans.variable} ${geistMono.variable}  `}>
+        <SessionWrapper>
           <Navbar />
-          <div className="min-h-[89vh]">{children}</div>
+          <div className=" min-h-screen bg-[#000000] bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px] text-white">
+            {children}
+          </div>          
           <Footer />
-        </div>
+        </SessionWrapper>
 
       </body>
     </html>
