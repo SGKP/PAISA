@@ -72,7 +72,7 @@ export const initiate = async (amount, to_username, paymentform) => {
         throw new Error("Failed to create payment order: " + error.message);
     }
 };
-
+// here we are fetching the data so that we can show it on ui page 
 export const fetchuser = async (username) => {
     await connectDB();
     let u = await User.findOne({ username });
