@@ -9,13 +9,11 @@ const Login = () => {
 
   useEffect(() => {
     document.title = "Login - Get Me A Chai" 
-    console.log("Session:", session)
-    console.log("Status:", status)
+ 
     
     // Only redirect when session is confirmed and not loading
     if (session && status === "authenticated") {
-      console.log("Redirecting to dashboard...")
-      router.push('/dashboard')
+       router.push('/dashboard')
     }
   }, [session, status, router]) // Add dependencies
  
@@ -92,3 +90,5 @@ const Login = () => {
 }
 
 export default Login
+
+ 

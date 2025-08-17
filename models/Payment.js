@@ -20,6 +20,7 @@ const PaymentSchema = new Schema({
         type: Boolean,
         default: false
     },
+ 
 });
 
 export default mongoose.models.Payment || model("Payment", PaymentSchema);

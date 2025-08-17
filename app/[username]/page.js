@@ -24,3 +24,9 @@ export default async function UserPage({ params }) {
 //         }
 //     };
 // }
+export async function generateMetadata({ params }) {
+    const { username } = await params;   // 👈 await here
+    return {
+        title: `Support ${username} - Get Me a Chai`,
+    };
+}

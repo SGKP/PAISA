@@ -36,8 +36,7 @@ export const authoptions = NextAuth({
           
           return true;
         } catch (error) {
-          console.error("Error during sign in:", error);
-          return false;
+           return false;
         }
       }
       return true;
@@ -54,8 +53,7 @@ export const authoptions = NextAuth({
         }
         return session;
       } catch (error) {
-        console.error("Error during session callback:", error);
-        return session;
+         return session;
       }
     },
   }

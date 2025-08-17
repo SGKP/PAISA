@@ -1,23 +1,15 @@
-"use client"
-import React, { useEffect } from 'react'
-import { useSession } from "next-auth/react"
-import { useRouter } from 'next/navigation'
+ import Dashboard from "@/components/Dashboard"
 
-const Dashboard = () => {
-  const { data: session } = useSession()
-  const router = useRouter()
+ const DashboardPage = async () => {
+     return (
+         <div>
+             <Dashboard />
+         </div>
+     )
+ }
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/login')
-    }
-  }, [session, router])
+ export default DashboardPage
 
-  return (
-    <div>
-      Dashboard
-    </div>
-  )
-}
-
-export default Dashboard
+ export const metadata = {
+     title: "Dashboard-Get Me a Chai",
+  }  

@@ -6,13 +6,10 @@ import User from "@/models/User";
 
 export const initiate = async (amount, to_username, paymentform) => {
     await connectDB();
+        let user=await User.findOne({username:to_username})
+        const secret=user.razorpaysecret;
     
-    // Debug logging and validation
-    console.log("Initiate called with:", { amount, to_username, paymentform });
-    console.log("Environment check:", {
-        KEY_ID: process.env.NEXT_PUBLIC_KEY_ID ? "Present" : "Missing",
-        KEY_SECRET: process.env.KEY_SECRET ? "Present" : "Missing"
-    });
+    
     
     // Validate required fields before proceeding
     if (!paymentform?.name || !paymentform.name.trim()) {
@@ -27,13 +24,13 @@ export const initiate = async (amount, to_username, paymentform) => {
         throw new Error("Valid amount is required");
     }
 
-    if (!process.env.NEXT_PUBLIC_KEY_ID || !process.env.KEY_SECRET) {
+    if (!user.razorpayid || !secret) {
         throw new Error("Razorpay credentials are not configured properly");
     }
 
     var instance = new Razorpay({
-        key_id: process.env.NEXT_PUBLIC_KEY_ID,
-        key_secret: process.env.KEY_SECRET
+        key_id: user.razorpayid,
+        key_secret: secret
     });
 
     // Use the actual amount, not hardcoded value
@@ -64,12 +61,11 @@ export const initiate = async (amount, to_username, paymentform) => {
             id: x.id,
             amount: x.amount,
             currency: x.currency,
-            key_id: process.env.NEXT_PUBLIC_KEY_ID, // Send key to frontend
+            key_id: user.razorpayid, // Send key to frontend
             receipt: x.receipt
         };
     } catch (error) {
-        console.error("Error creating payment:", error);
-        throw new Error("Failed to create payment order: " + error.message);
+         throw new Error("Failed to create payment order: " + error.message);
     }
 };
 
@@ -82,7 +78,7 @@ export const fetchuser = async (username) => {
 export const fetchpayments = async (username) => {
     await connectDB();
     let p = await Payment.find({ to_user: username })
-        .sort({ amount: -1 })
+        .sort({ amount: -1 }).limit(10)
         .lean();
 
     return p.map(payment => ({
@@ -90,3 +86,28 @@ export const fetchpayments = async (username) => {
         _id: payment._id.toString(),
     }));
 };
+
+export const updateProfile = async (data, oldusername) => {
+  try {
+    await connectDB();
+    let ndata = data;
+
+    if (oldusername !== ndata.username) {
+      let user = await User.findOne({ username: ndata.username });
+      if (user) {
+        return { success: false, message: "Username is already taken" };
+      }
+
+      await User.updateOne({ email: ndata.email }, ndata);
+      await Payment.updateMany({ to_user: oldusername }, { to_user: ndata.username });
+    } else {
+      await User.updateOne({ email: ndata.email }, ndata);
+    }
+
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
+
