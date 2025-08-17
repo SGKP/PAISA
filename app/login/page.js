@@ -13,7 +13,7 @@ const Login = () => {
     
     // Only redirect when session is confirmed and not loading
     if (session && status === "authenticated") {
-       router.push('/dashboard')
+       router.push('/Dashboard')
     }
   }, [session, status, router]) // Add dependencies
  
